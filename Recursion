@@ -1,0 +1,188 @@
+//
+//  recursion.cpp
+//
+//  Created by Aaron Kuo on 7/21/21.
+//
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// mTimesn ----
+// Returns the product of two non-negative integers, m and n,
+// using only repeated addition.
+int mTimesN(unsigned int m, unsigned int n)
+{
+    if( m < 1 || n < 1){
+        return 0;
+    }
+    else
+        return (m + mTimesN(m,n-1));
+}
+
+// tallyTheDigits ----
+// Returns the number of occurrences of digit in the decimal
+// representation of num. digit is an int between 0 and 9
+// inclusive.
+// Prof Note: May assume no leading zeros
+// Pseudocode Example:
+// tallyTheDigits(18838, 8) => 3
+// tallyTheDigits (55555, 3) => 0
+// tallyTheDigits (0, 0) => 0 or 1 (either if fine)
+//
+int tallyTheDigits (int num, int digit)
+{
+    if (num <= 0) // If number is less than or equal to 0, return 0 since this function is
+                  // 0 and 9 inclusive
+        return 0;
+    else{
+        int val = num % 10; //Modelo 10 to isolate just one digit at a time
+        if (val == digit){
+                return 1 + tallyTheDigits(num / 10, digit);
+            }
+      return tallyTheDigits(num / 10, digit);
+    }
+       
+}
+
+// foursUp ----
+// Returns a string where the same characters next each other in
+// string n are separated by "44" (you can assume the input
+// string will not have 4’s)
+//
+// Pseudocode Example:
+// foursUp("goodbye") => "go44odbye"
+// foursUp("yyuu") => "y44yu44u"
+// foursUp("aaaa") => "a44a44a44a"
+//
+string foursUp (string n)
+{
+ if (n[0] == '\0') // If no more characters in string, return with substring
+     return "";
+ else if(n[0] == n[1]){ // If next character is equal to current
+         return (n[0] + ("44" + foursUp(n.substr(1)))); // Insert 44 and add current character onto new substring
+     }
+ else
+     return n[0] + foursUp(n.substr(1)); // Insert character into new substring
+}
+
+// parenthethicallySpeaking ----
+// str contains a single pair of parentheses, return a new
+// string made of only the parentheses and whatever those
+// parentheses contain
+// Prof Note: May assume each string will have exactly one complete pair of parenthesis
+// Pseudocode Example:
+// parentheticallySpeaking("abc(ghj)789") => "(ghj)"
+// parentheticallySpeaking ("(x)7") => "(x)"
+// parentheticallySpeaking ("4agh(y)") => "(y)"
+// parentheticallySpeaking ("4agh()") => "()"
+//
+string parentheticallySpeaking(string str)
+{
+    if (str == "()"){ //Special Case: If string is just parenthesis and nothing else,
+                      //return string
+        return str;
+    }
+    if(str.substr(0,1) == "("){ //If current character is open parenthesis
+        if (str.substr(str.size() - 1, 1) == ")") // If current character is close parenthesis
+                return str;                       // Return string, done copying
+            else
+                return parentheticallySpeaking(str.substr(0, str.size() - 1));
+                                                  // If not close parenthesis, copy current character onto substring
+        }
+        else
+            return parentheticallySpeaking(str.substr(1, str.size() - 1));
+            // Recursion: keep traversing through string until open parenthesis is found
+    }
+
+
+// totalEclipseOfTheHeart ----
+// Return true if the total of any combination of elements in
+// the array a equals the value of the target.
+
+// Pseudocode Example:
+// totalEclipseOfTheHeart([2, 4, 8], 3, 10) => true
+// totalEclipseOfTheHeart ([2, 4, 8], 3, 6) => true
+// totalEclipseOfTheHeart ([2, 4, 8], 3, 11) => false
+// totalEclipseOfTheHeart ([2, 4, 8], 3, 0) => true
+// totalEclipseOfTheHeart ([], 0, 0) => true
+//
+bool totalEclipseOfTheHeart (const int a[], int size, int
+target)
+{
+    if (target == 0) // If 0 element combination, return true
+        return true;
+    else if (size == 0) // If size is 0, there are no numbers to add so return false
+        return false;
+    else //Iterate through and keep subtracting until values add up to the target
+        return (totalEclipseOfTheHeart(a+1, size-1, target) || totalEclipseOfTheHeart(a+1, size-1, target-a[0]));
+}
+
+// Season Finale ----
+// Return true if there is a path from (sr,sc) to (er,ec)
+// through the maze; return false otherwise
+// Prof Note: Assume maze only contains Xs, @s, and dots
+//            Assume maze contains only nRows and nColumns
+//            Assume surrounding border of maze only contains Xs
+bool seasonFinale (string maze[], int nRows, int nCols,
+                   int sr, int sc, int er, int ec){
+    char currentPosition = '!';     // Set temp marker to track current position on maze
+    maze[sr][sc] = currentPosition; // ---
+    if (sr == er && sc == ec){      //If starting location is equal to ending, return true
+        return true;
+    }
+        // Checking South of Current Position
+        if(seasonFinale(maze, nRows, nCols, sr + 1, sc, er, ec) == true && maze[sr+1][sc]=='.'){
+            return true; // Return true if path is found
+        }
+        // Checking North of Current Position
+        if(seasonFinale(maze, nRows, nCols, sr - 1, sc, er, ec) == true && maze[sr-1][sc]=='.'){
+            return true; // Return true if path is found
+        }
+        // Checking East of Current Position
+        if(seasonFinale(maze, nRows, nCols, sr, sc + 1, er, ec) == true && maze[sr][sc+1]=='.'){
+            return true; // Return true if path is found
+        }
+        // Checking West of Current Position
+        if(seasonFinale(maze, nRows, nCols, sr, sc - 1, er, ec) == true && maze[sr][sc-1]=='.'){
+            return true; // Return true if path is found
+        }
+    // Only returns false if path cannot be found (either due to X or @)
+    return false;
+}
+
+int factorial (int n) {
+    if (n == 0) return 1;
+    return n * factorial (n);
+}
+
+bool mirrorMirrorOnTheWall(string n) {
+    // If just one character, the string is a palindrome so return true
+    if (n.length() <= 1) {
+        return true;
+    }
+    else
+    // Recurse through each letter and compare with end letter
+    return mirrorMirrorOnTheWall(n.substr(1,n.length()-2)) && (n[0]== n[n.length()-1]);
+}
+
+bool theQuadSquad (int x[], int size, int total, int count)
+{
+      if ((size == 0) && total == 0 && count == 4)
+          return true;
+      if (total != 0 && count == 4)
+          count = 0;
+      if (size == 0)
+          return false;
+      if (theQuadSquad(x+1, size-1, total, count++))
+          return true;
+      else
+      return (theQuadSquad(x+1, size-1, total-x[0], count++));
+}
+
+int main() {
+// Compiles
+    int a[8] = {5, 2, 1, 9, 7, 0, 4, 3};
+    bool k = theQuadSquad(a, 8, 20, 0);
+    cout << k << endl;
+}
